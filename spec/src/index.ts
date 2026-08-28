@@ -29,6 +29,25 @@ export const THEME_MOUNT_POINTS = {
   media: "public/media",
 } as const;
 
+/** An ordered, site-owner-maintained top-level navigation/archive category. */
+export interface SiteCategory {
+  /** URL-safe identifier, e.g. "tech". Unique within `site.categories`. */
+  slug: string;
+  /** Display label, e.g. "Tech". */
+  label: string;
+  /**
+   * When false, themes omit this category from the top navigation.
+   * Archive pages (`/categories/<slug>/`) and post assignment are unaffected.
+   * Missing or true means the category appears in the nav. Default true.
+   */
+  inNav?: boolean;
+}
+
+/** Top-nav visibility. Absent `inNav` is treated as true so existing sites keep their current menus. */
+export function isCategoryInNav(category: Pick<SiteCategory, "inNav">): boolean {
+  return category.inNav !== false;
+}
+
 export interface SiteInfo {
   title: string;
   description?: string;
@@ -40,6 +59,23 @@ export interface SiteInfo {
   basePath?: string;
   author?: string;
   timezone?: string;
+  /**
+   * Ordered list of categories maintained by the site owner. Themes render
+   * `/categories/<slug>/` archive pages for every entry, and top nav links
+   * for those with `inNav !== false`. Distinct from the free-form `tags` on
+   * individual posts — every post picks at most one category from this list
+   * (stored as `categories: [slug]` in its frontmatter), while tags remain
+   * unrestricted.
+   */
+  categories?: SiteCategory[];
+  /** Posts per page for the homepage and category archives. Default 10. */
+  postsPerPage?: number;
+  /**
+   * Raw HTML/script snippet (e.g. from GA4, Umami, Plausible, Clarity) that
+   * themes insert verbatim before `</head>` on every page. Empty/absent means
+   * no analytics are injected.
+   */
+  analyticsSnippet?: string;
 }
 
 export interface ThemeRef {

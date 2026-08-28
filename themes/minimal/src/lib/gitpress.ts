@@ -1,6 +1,13 @@
 import { existsSync, readFileSync } from "node:fs";
 import { getCollection, type CollectionEntry } from "astro:content";
 
+interface SiteCategory {
+  slug: string;
+  label: string;
+  /** When false, omit from top nav. Missing means true. */
+  inNav?: boolean;
+}
+
 interface SiteInfo {
   title: string;
   description?: string;
@@ -8,6 +15,9 @@ interface SiteInfo {
   url?: string;
   basePath?: string;
   author?: string;
+  analyticsSnippet?: string;
+  categories?: SiteCategory[];
+  postsPerPage?: number;
 }
 
 interface GitPressConfig {
@@ -43,6 +53,16 @@ export const themeConfig = {
 export type Post = CollectionEntry<"posts">;
 export type Page = CollectionEntry<"pages">;
 
+/** Ordered, site-owner-maintained categories — drives archive pages. */
+export const siteCategories: SiteCategory[] = gitpress.site.categories ?? [];
+/** Categories shown in the top nav. Absent `inNav` is treated as true. */
+export const navCategories: SiteCategory[] = siteCategories.filter((category) => category.inNav !== false);
+export const postsPerPage: number = gitpress.site.postsPerPage ?? 10;
+
+export function categoryLabel(slug: string): string {
+  return siteCategories.find((c) => c.slug === slug)?.label ?? slug;
+}
+
 export async function getPublishedPosts(): Promise<Post[]> {
   const includeDrafts = process.env.GITPRESS_INCLUDE_DRAFTS === "true";
   const posts = await getCollection("posts");
@@ -52,6 +72,11 @@ export async function getPublishedPosts(): Promise<Post[]> {
       (a, b) =>
         (b.data.date ? b.data.date.getTime() : 0) - (a.data.date ? a.data.date.getTime() : 0),
     );
+}
+
+export async function getPostsByCategory(slug: string): Promise<Post[]> {
+  const posts = await getPublishedPosts();
+  return posts.filter((post) => (post.data.categories ?? []).includes(slug));
 }
 
 export function postSlug(post: Post | Page): string {

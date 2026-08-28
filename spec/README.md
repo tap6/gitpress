@@ -22,6 +22,28 @@ GitPress 生态的共同契约:平台、构建 Action、所有主题(包括 AI �
     └── gitpress-build.yml        # 极薄 workflow,逻辑都在 build action 里
 ```
 
+## 站点配置(`gitpress.json` 的 `site` 字段,v1 新增)
+
+```json
+{
+  "site": {
+    "title": "我的博客",
+    "categories": [
+      { "slug": "tech", "label": "技术" },
+      { "slug": "notes", "label": "随笔", "inNav": false }
+    ],
+    "postsPerPage": 10,
+    "analyticsSnippet": "<script>/* GA4 / Umami / Plausible / Clarity 等平台给的完整代码,原样插入 </head> 前 */</script>"
+  }
+}
+```
+
+- `categories`:站长维护的有序分类列表。主题为每个分类生成 `/categories/<slug>/` 归档页;顶部导航只包含 `inNav` 不为 `false` 的项(缺省为 `true`,现有站点菜单不变)。每篇文章从这个列表选一个主分类(写入 frontmatter 的 `categories` 数组第 0 项),与自由的 `tags` 并存、互不影响。关掉顶栏不等于删除分类。
+- `postsPerPage`:首页与归档页的分页大小,缺省 10。
+- `analyticsSnippet`:原始 HTML/脚本片段,缺省不注入任何统计代码。
+
+以上三个字段均为新增的可选字段,不涉及 `schemaVersion` 变更。
+
 ## 文章 frontmatter(v1)
 
 ```yaml
