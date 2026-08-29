@@ -130,6 +130,11 @@ export interface SiteInfo {
    */
   analyticsSnippet?: string;
   /**
+   * Raw embed snippet (e.g. from giscus.app) that themes render under each
+   * post's body. Empty/absent means no comments.
+   */
+  commentsSnippet?: string;
+  /**
    * Explicit, ordered top-nav menu maintained by the site owner: which items
    * appear (including whether "Home" or "RSS" show up at all), in what
    * order, and under what label. This is the *only* source of truth for the
@@ -219,7 +224,7 @@ export interface ThemeManifest {
  */
 export interface PostFrontmatter {
   title: string;
-  /** ISO 8601. Missing date = treated as draft by builders. */
+  /** ISO 8601 local wall time, e.g. `2026-08-30T14:05:00`. Date-only is still accepted. Missing date = treated as draft by builders. */
   date?: string;
   updated?: string;
   /** Drafts are excluded from public builds and never leave the private data repo. */
@@ -231,6 +236,8 @@ export interface PostFrontmatter {
   cover?: string;
   /** Overrides the filename-derived slug. */
   slug?: string;
+  /** Previous slugs this post/page used to live at; themes emit static redirect stubs for each. */
+  redirectFrom?: string[];
   [key: string]: unknown;
 }
 
