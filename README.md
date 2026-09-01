@@ -1,30 +1,33 @@
 # gitpress
 
-Open-source parts of [GitPress.net](https://gitpress.net): the theme spec,
-builtin Astro themes, and the data-repository template.
+**GitPress 博客的主题和约定：Markdown 怎么写、站点长什么样，都认这一份。** [MIT](LICENSE) 开源。
 
-The GitPress platform (login, WordPress-style admin, GitHub orchestration) is
-closed source. This repo is what the platform and your own themes build on.
+站点锁定本仓 `@v1`。换主题或自己做主题，都从这里的 spec 走。本仓不是后台。
 
-## Layout
+中文 | [English](README.en.md)
 
-| Directory | Contents |
+控制面（登录、写稿、建仓）在 [tap6/GitPress.net](https://github.com/tap6/GitPress.net)，源码公开，许可是 PolyForm Shield，不是闭源，也不是本仓的 MIT。编译用 [tap6/build-action](https://github.com/tap6/build-action)（同样 MIT）。
+
+页脚里的公安备案徽章是官方网安徽章，仅供依法展示，不随 MIT 再授权。
+
+## 目录
+
+| 路径 | 内容 |
 | --- | --- |
-| `spec/` | v1 spec: `gitpress.json` / `theme.json` JSON Schemas, frontmatter conventions, TS types |
-| `themes/` | Builtin Astro themes: `classic`, `minimal`, `ink` |
-| `templates/data-repo/` | Starting layout for a GitPress data repository |
+| [`spec/`](spec/) | v1 规范：`gitpress.json` / `theme.json` JSON Schema、frontmatter、TypeScript 类型 |
+| [`spec/THEME_AUTHORING.md`](spec/THEME_AUTHORING.md) | 做主题、导入主题的约定 |
+| [`themes/`](themes/) | 内置 Astro 主题：`classic`、`minimal`、`ink`、`quill` |
+| [`templates/data-repo/`](templates/data-repo/) | 数据仓库起始布局与示例 |
 
-## Compatibility
+规范正文从 [`spec/README.md`](spec/README.md) 读起，不要把那一篇当成本仓介绍。
 
-- All config files carry a `schemaVersion` / `specVersion`. New fields are
-  always additive and optional; unknown fields must be ignored, not rejected.
-- Sites pin a theme name + ref in `gitpress.json`; upgrading the platform
-  never touches user repositories.
-- Breaking changes only ship under a new major tag (this repo is tagged
-  `v1`); `v1` stays backward compatible forever.
+## 相关
 
-## Related
+- 后台：[tap6/GitPress.net](https://github.com/tap6/GitPress.net)
+- 构建：`uses: tap6/build-action@v1`
+- 站点：[https://gitpress.net](https://gitpress.net)
 
-- [tap6/build-action](https://github.com/tap6/build-action) — the GitHub
-  Action that builds a data repository with a theme from this repo and
-  publishes the compiled site.
+## 兼容性
+
+- 配置带 `schemaVersion` / `specVersion`。新字段只做加法；不认识的字段必须忽略，不能整站报错。
+- 破坏性变更只出现在新的大版本标签（`v2`）。本仓当前是 `v1`，向后兼容。
